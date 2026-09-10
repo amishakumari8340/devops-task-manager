@@ -2,21 +2,34 @@ pipeline {
     agent any
 
     stages {
+
         stage('Checkout') {
             steps {
-                echo 'Checking out project...'
+                echo 'Code checked out from GitHub'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Building DevOps Task Manager...'
+                sh 'docker build -t devops-task-manager:1.0 .'
             }
         }
 
-        stage('Test') {
+        stage('Load Image into Kind') {
             steps {
-                echo 'Running tests...'
+                sh 'kind load docker-image devops-task-manager:1.0 --name kind-devops-cluster'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f k8s/'
+            }
+        }
+
+        stage('Verify Deployment') {
+            steps {
+                sh 'kubectl rollout status deployment/devops-task-manager'
             }
         }
     }
