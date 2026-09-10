@@ -17,7 +17,7 @@ pipeline {
 
         stage('Load Image into Kind') {
             steps {
-                sh 'kind load docker-image devops-task-manager:1.0 --name kind-devops-cluster'
+                sh 'kind load docker-image devops-task-manager:1.0 --name devops-cluster'
             }
         }
 
